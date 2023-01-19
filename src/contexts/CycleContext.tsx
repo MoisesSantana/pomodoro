@@ -1,23 +1,24 @@
+import { differenceInSeconds } from "date-fns";
 import {
   createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
+  useEffect,
+  useReducer,
   useState,
 } from "react";
+import { persistCycle } from "../services/storage";
+import {
+  addNewCycleAction,
+  finishedCycleAction,
+  interruptCycleAction,
+} from "./actions";
+import { cyclesReducer, ICycle } from "./reducers/cycles";
 
 interface CreateCycleData {
   task: string;
   minutesAmount: number;
-}
-
-interface ICycle {
-  id: string;
-  task: string;
-  minutesAmount: number;
-  startDate: Date;
-  interruptedDate?: Date;
-  finishedDate?: Date;
 }
 
 interface IContext {
@@ -37,21 +38,35 @@ interface ICycleProviderProps {
   children: ReactNode;
 }
 
+const INITIAL_CYCLES_STATE = { cycles: [], activeCycleId: null };
+
 export function CycleProvider({ children }: ICycleProviderProps) {
-  const [cycles, setCycles] = useState<ICycle[]>([]);
-  const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
-  const [totalSecondsPassed, setTotalSecondsPassed] = useState(0);
+  const [cyclesState, dispatch] = useReducer(
+    cyclesReducer,
+    INITIAL_CYCLES_STATE,
+    () => {
+      const storedStateAsJSON = localStorage.getItem("@pomodoro:cycles-state");
+      if (storedStateAsJSON) return JSON.parse(storedStateAsJSON);
+    }
+  );
+
+  const { cycles, activeCycleId } = cyclesState;
 
   const activeCycle = cycles.find(({ id }) => id === activeCycleId);
 
+  const [totalSecondsPassed, setTotalSecondsPassed] = useState(() => {
+    if (activeCycle)
+      return differenceInSeconds(new Date(), new Date(activeCycle.startDate));
+
+    return 0;
+  });
+
+  useEffect(() => {
+    persistCycle(cyclesState);
+  }, [cyclesState]);
+
   const markCycleAsFinished = () => {
-    setCycles((prevState) =>
-      prevState.map((cycle) => {
-        if (cycle.id === activeCycleId)
-          return { ...cycle, finishedDate: new Date() };
-        return cycle;
-      })
-    );
+    dispatch(finishedCycleAction());
   };
 
   const createNewCycle = (data: CreateCycleData) => {
@@ -63,21 +78,12 @@ export function CycleProvider({ children }: ICycleProviderProps) {
       ...data,
     };
 
-    setCycles((prevState) => [...prevState, newCycle]);
-    setActiveCycleId(id);
+    dispatch(addNewCycleAction(newCycle));
     setTotalSecondsPassed(0);
   };
 
   const interruptCurrentCycle = () => {
-    setCycles((prevState) =>
-      prevState.map((cycle) => {
-        if (cycle.id === activeCycleId)
-          return { ...cycle, interruptedDate: new Date() };
-        return cycle;
-      })
-    );
-
-    setActiveCycleId(null);
+    dispatch(interruptCycleAction());
   };
 
   return (
