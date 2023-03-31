@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const HistoryContainer = styled.main`
   flex: 1;
@@ -8,9 +8,9 @@ export const HistoryContainer = styled.main`
 
   h1 {
     font-size: 1.5rem;
-    color: ${({ theme }) => theme["gray-100"]};
+    color: ${({ theme }) => theme['gray-100']};
   }
-`;
+`
 
 export const HistoryList = styled.div`
   flex: 1;
@@ -23,10 +23,10 @@ export const HistoryList = styled.div`
     min-width: 600px;
 
     th {
-      background-color: ${({ theme }) => theme["gray-600"]};
+      background-color: ${({ theme }) => theme['gray-600']};
       padding: 1rem;
       text-align: left;
-      color: ${({ theme }) => theme["gray-100"]};
+      color: ${({ theme }) => theme['gray-100']};
       font-size: 0.875;
       line-height: 1.6;
 
@@ -42,8 +42,8 @@ export const HistoryList = styled.div`
     }
 
     td {
-      background-color: ${({ theme }) => theme["gray-700"]};
-      border-top: 4px solid ${({ theme }) => theme["gray-800"]};
+      background-color: ${({ theme }) => theme['gray-700']};
+      border-top: 4px solid ${({ theme }) => theme['gray-800']};
       padding: 1rem;
       font-size: 0.875rem;
       line-height: 1.6;
@@ -58,16 +58,16 @@ export const HistoryList = styled.div`
       }
     }
   }
-`;
+`
 
 const STATUS_COLOR = {
-  yellow: "yellow-500",
-  green: "green-500",
-  red: "red-500",
-} as const;
+  yellow: 'yellow-500',
+  green: 'green-500',
+  red: 'red-500',
+} as const
 
 interface IStatusProps {
-  statusColor: keyof typeof STATUS_COLOR;
+  statusColor: keyof typeof STATUS_COLOR
 }
 
 export const Status = styled.span<IStatusProps>`
@@ -76,11 +76,11 @@ export const Status = styled.span<IStatusProps>`
   gap: 0.5rem;
 
   &::before {
-    content: "";
+    content: '';
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
     background-color: ${(props) =>
       props.theme[STATUS_COLOR[props.statusColor]]};
   }
-`;
+`

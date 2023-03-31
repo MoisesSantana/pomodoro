@@ -1,46 +1,46 @@
-import { HandPalm, Play } from "phosphor-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm } from "react-hook-form";
-import * as zod from "zod";
-import { NewCycleForm } from "./components/NewCycleForm";
-import { Countdown } from "./components/Countdown";
+import { HandPalm, Play } from 'phosphor-react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { FormProvider, useForm } from 'react-hook-form'
+import * as zod from 'zod'
+import { NewCycleForm } from './components/NewCycleForm'
+import { Countdown } from './components/Countdown'
 import {
   StartCountdownButton,
   HomeContainer,
   StopCountdownButton,
-} from "./styles";
-import { useContext } from "react";
-import { CyclesContext } from "../../contexts/CycleContext";
+} from './styles'
+import { useContext } from 'react'
+import { CyclesContext } from '../../contexts/CycleContext'
 
 const newCycleFormValidationSchema = zod.object({
-  task: zod.string().min(1, "Informe a tarefa"),
+  task: zod.string().min(1, 'Informe a tarefa'),
   minutesAmount: zod.number().min(5).max(60),
-});
+})
 
-type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>;
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
 export function Home() {
   const { createNewCycle, interruptCurrentCycle, activeCycle } =
-    useContext(CyclesContext);
+    useContext(CyclesContext)
 
   const newCycleForm = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
-      task: "",
+      task: '',
       minutesAmount: 0,
     },
-  });
+  })
 
-  const { handleSubmit, watch, reset } = newCycleForm;
+  const { handleSubmit, watch, reset } = newCycleForm
 
   function handleCreateNewCycle(data: NewCycleFormData) {
-    createNewCycle(data);
-    reset();
+    createNewCycle(data)
+    reset()
   }
 
-  const task = watch("task");
-  const minutesAmount = watch("minutesAmount");
-  const isDisabled = !task || !minutesAmount;
+  const task = watch('task')
+  const minutesAmount = watch('minutesAmount')
+  const isDisabled = !task || !minutesAmount
 
   return (
     <HomeContainer>
@@ -65,5 +65,5 @@ export function Home() {
         )}
       </form>
     </HomeContainer>
-  );
+  )
 }

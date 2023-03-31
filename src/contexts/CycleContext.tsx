@@ -1,4 +1,4 @@
-import { differenceInSeconds } from "date-fns";
+import { differenceInSeconds } from 'date-fns'
 import {
   createContext,
   Dispatch,
@@ -7,84 +7,85 @@ import {
   useEffect,
   useReducer,
   useState,
-} from "react";
-import { persistCycle } from "../services/storage";
+} from 'react'
+import { persistCycle } from '../services/storage'
 import {
   addNewCycleAction,
   finishedCycleAction,
   interruptCycleAction,
-} from "./actions";
-import { cyclesReducer, ICycle } from "./reducers/cycles";
+} from './actions'
+import { cyclesReducer, ICycle } from './reducers/cycles'
 
 interface CreateCycleData {
-  task: string;
-  minutesAmount: number;
+  task: string
+  minutesAmount: number
 }
 
 interface IContext {
-  cycles: ICycle[];
-  activeCycle: ICycle | undefined;
-  activeCycleId: string | null;
-  markCycleAsFinished: () => void;
-  totalSecondsPassed: number;
-  setTotalSecondsPassed: Dispatch<SetStateAction<number>>;
-  createNewCycle: (data: CreateCycleData) => void;
-  interruptCurrentCycle: () => void;
+  cycles: ICycle[]
+  activeCycle: ICycle | undefined
+  activeCycleId: string | null
+  markCycleAsFinished: () => void
+  totalSecondsPassed: number
+  setTotalSecondsPassed: Dispatch<SetStateAction<number>>
+  createNewCycle: (data: CreateCycleData) => void
+  interruptCurrentCycle: () => void
 }
 
-export const CyclesContext = createContext({} as IContext);
+export const CyclesContext = createContext({} as IContext)
 
 interface ICycleProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
-const INITIAL_CYCLES_STATE = { cycles: [], activeCycleId: null };
+const INITIAL_CYCLES_STATE = { cycles: [], activeCycleId: null }
 
 export function CycleProvider({ children }: ICycleProviderProps) {
   const [cyclesState, dispatch] = useReducer(
     cyclesReducer,
     INITIAL_CYCLES_STATE,
     () => {
-      const storedStateAsJSON = localStorage.getItem("@pomodoro:cycles-state");
-      if (storedStateAsJSON) return JSON.parse(storedStateAsJSON);
-    }
-  );
+      const storedStateAsJSON = localStorage.getItem('@pomodoro:cycles-state')
+      if (storedStateAsJSON) return JSON.parse(storedStateAsJSON)
+      else return INITIAL_CYCLES_STATE
+    },
+  )
+  console.log(cyclesState)
+  const { cycles, activeCycleId } = cyclesState
 
-  const { cycles, activeCycleId } = cyclesState;
-
-  const activeCycle = cycles.find(({ id }) => id === activeCycleId);
+  const activeCycle = cycles.find(({ id }) => id === activeCycleId)
 
   const [totalSecondsPassed, setTotalSecondsPassed] = useState(() => {
     if (activeCycle)
-      return differenceInSeconds(new Date(), new Date(activeCycle.startDate));
+      return differenceInSeconds(new Date(), new Date(activeCycle.startDate))
 
-    return 0;
-  });
+    return 0
+  })
 
   useEffect(() => {
-    persistCycle(cyclesState);
-  }, [cyclesState]);
+    persistCycle(cyclesState)
+  }, [cyclesState])
 
   const markCycleAsFinished = () => {
-    dispatch(finishedCycleAction());
-  };
+    dispatch(finishedCycleAction())
+  }
 
   const createNewCycle = (data: CreateCycleData) => {
-    const id = String(new Date().getTime());
+    const id = String(new Date().getTime())
 
     const newCycle: ICycle = {
       id,
       startDate: new Date(),
       ...data,
-    };
+    }
 
-    dispatch(addNewCycleAction(newCycle));
-    setTotalSecondsPassed(0);
-  };
+    dispatch(addNewCycleAction(newCycle))
+    setTotalSecondsPassed(0)
+  }
 
   const interruptCurrentCycle = () => {
-    dispatch(interruptCycleAction());
-  };
+    dispatch(interruptCycleAction())
+  }
 
   return (
     <CyclesContext.Provider
@@ -101,5 +102,5 @@ export function CycleProvider({ children }: ICycleProviderProps) {
     >
       {children}
     </CyclesContext.Provider>
-  );
+  )
 }

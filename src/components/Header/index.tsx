@@ -1,7 +1,7 @@
-import { HeaderContainer } from "./styles";
-import logo from "../../assets/logo.svg";
-import { NavLink } from "react-router-dom";
-import { Scroll, Timer } from "phosphor-react";
+import { HeaderContainer } from './styles'
+import logo from '../../assets/logo.svg'
+import { NavLink } from 'react-router-dom'
+import { Scroll, Timer } from 'phosphor-react'
 
 export function Header() {
   return (
@@ -16,5 +16,5 @@ export function Header() {
         </NavLink>
       </nav>
     </HeaderContainer>
-  );
+  )
 }

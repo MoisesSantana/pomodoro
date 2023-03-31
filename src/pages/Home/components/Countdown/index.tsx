@@ -1,7 +1,7 @@
-import { differenceInSeconds } from "date-fns";
-import { useContext, useEffect } from "react";
-import { CyclesContext } from "../../../../contexts/CycleContext";
-import { CountdownContainer, Separator } from "./styles";
+import { differenceInSeconds } from 'date-fns'
+import { useContext, useEffect } from 'react'
+import { CyclesContext } from '../../../../contexts/CycleContext'
+import { CountdownContainer, Separator } from './styles'
 
 export function Countdown() {
   const {
@@ -10,59 +10,57 @@ export function Countdown() {
     markCycleAsFinished,
     totalSecondsPassed,
     setTotalSecondsPassed,
-  } = useContext(CyclesContext);
+  } = useContext(CyclesContext)
 
-  const minutesToSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
+  const minutesToSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
 
   useEffect(() => {
-    let interval: number;
+    let interval: number
 
     if (activeCycle) {
       interval = setInterval(() => {
         const differenceInSec = differenceInSeconds(
           new Date(),
-          new Date(activeCycle.startDate)
-        );
+          new Date(activeCycle.startDate),
+        )
 
         if (differenceInSec >= minutesToSeconds) {
-          markCycleAsFinished();
-          setTotalSecondsPassed(minutesToSeconds);
-          clearInterval(interval);
-        } else setTotalSecondsPassed(differenceInSec);
-      }, 1000);
+          markCycleAsFinished()
+          setTotalSecondsPassed(minutesToSeconds)
+          clearInterval(interval)
+        } else setTotalSecondsPassed(differenceInSec)
+      }, 1000)
     }
 
     return () => {
-      clearInterval(interval);
-    };
+      clearInterval(interval)
+    }
   }, [
     activeCycle,
     minutesToSeconds,
     activeCycleId,
     markCycleAsFinished,
     setTotalSecondsPassed,
-  ]);
+  ])
 
-  const currentSeconds = activeCycle
-    ? minutesToSeconds - totalSecondsPassed
-    : 0;
+  const currentSeconds = activeCycle ? minutesToSeconds - totalSecondsPassed : 0
 
-  const minutes = Math.floor(currentSeconds / 60);
-  const seconds = currentSeconds % 60;
+  const minutes = Math.floor(currentSeconds / 60)
+  const seconds = currentSeconds % 60
 
-  const [firstDigitOfMin, secondDigitOfMin] = String(minutes).padStart(2, "0");
-  const [firstDigitOfSec, secondDigitOfSec] = String(seconds).padStart(2, "0");
+  const [firstDigitOfMin, secondDigitOfMin] = String(minutes).padStart(2, '0')
+  const [firstDigitOfSec, secondDigitOfSec] = String(seconds).padStart(2, '0')
 
   useEffect(() => {
     if (activeCycle)
-      document.title = `${firstDigitOfMin}${secondDigitOfMin}:${firstDigitOfSec}${secondDigitOfSec} - Pomodoro`;
+      document.title = `${firstDigitOfMin}${secondDigitOfMin}:${firstDigitOfSec}${secondDigitOfSec} - Pomodoro`
   }, [
     firstDigitOfMin,
     secondDigitOfMin,
     firstDigitOfSec,
     secondDigitOfSec,
     activeCycle,
-  ]);
+  ])
 
   return (
     <CountdownContainer>
@@ -72,5 +70,5 @@ export function Countdown() {
       <span>{firstDigitOfSec}</span>
       <span>{secondDigitOfSec}</span>
     </CountdownContainer>
-  );
+  )
 }

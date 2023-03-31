@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const HomeContainer = styled.main`
   flex: 1;
@@ -14,7 +14,7 @@ export const HomeContainer = styled.main`
     align-items: center;
     gap: 3.5rem;
   }
-`;
+`
 
 const BaseCountdownButton = styled.button`
   width: 100%;
@@ -32,22 +32,22 @@ const BaseCountdownButton = styled.button`
     opacity: 0.7;
     cursor: not-allowed;
   }
-`;
+`
 
 export const StartCountdownButton = styled(BaseCountdownButton)`
-  background-color: ${({ theme }) => theme["green-500"]};
-  color: ${({ theme }) => theme["gray-100"]};
+  background-color: ${({ theme }) => theme['green-500']};
+  color: ${({ theme }) => theme['gray-100']};
 
   &:not(:disabled):hover {
-    background-color: ${({ theme }) => theme["green-700"]};
+    background-color: ${({ theme }) => theme['green-700']};
   }
-`;
+`
 
 export const StopCountdownButton = styled(BaseCountdownButton)`
-  background-color: ${({ theme }) => theme["red-500"]};
-  color: ${({ theme }) => theme["gray-100"]};
+  background-color: ${({ theme }) => theme['red-500']};
+  color: ${({ theme }) => theme['gray-100']};
 
   &:not(:disabled):hover {
-    background-color: ${({ theme }) => theme["red-700"]};
+    background-color: ${({ theme }) => theme['red-700']};
   }
-`;
+`
